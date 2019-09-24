@@ -5,6 +5,8 @@ export const DEFAULT_API_ACTIONS = {
   PUT: true,
 };
 
+export const PROJECTS_DIR = 'projects';
+
 export enum Layer {
   service = 'service',
   controller = 'controller',
@@ -18,3 +20,4 @@ export enum Verb {
   PUT = 'PUT',
   DELETE = 'DELETE',
 }
+

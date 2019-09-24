@@ -1,15 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { DEFAULT_API_ACTIONS, Verb } from '../utils/constants';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { prop, flatten } from 'ramda';
+import { Injectable, HttpService } from '@nestjs/common';
+import { CreateLayerDto } from 'src/shared/models/create-layer.dto';
+import { CreateModelDto } from 'src/shared/models/create-model.dto';
+import { DEFAULT_API_ACTIONS, Verb, Layer } from '../utils/constants';
+import { CreateModuleDto } from 'src/shared/models/create-module.dto';
 import { CreateServiceDto } from '../shared/models/create-service.dto';
 import { CreateControllerDto } from '../shared/models/create-controller.dto';
 import { CreateProjectDto, EntityAPIActions } from '../shared/models/create-project.dto';
-import { CreateModuleDto } from 'src/shared/models/create-module.dto';
-import { CreateModelDto } from 'src/shared/models/create-model.dto';
+import { FilesCreationService } from './files-creation.service';
+import { FileGenerated } from 'src/shared/models/file-generated.model';
 
 @Injectable()
 export class ProjectService {
-  generateProject(createProjectDto: CreateProjectDto) {
+  constructor(private readonly httpService: HttpService, private readonly filesCreationService: FilesCreationService) {}
+
+  generateFileRequestFn(route: string) {
+    return (input: CreateLayerDto) => this.httpService.post(`http://localhost:3001/${route}`, input).pipe(map(prop('data')));
+  }
+
+  async generateProject(createProjectDto: CreateProjectDto) {
     const {
+      projectName,
       apiConfig: {
         modules = true,
         services = true,
@@ -23,12 +36,16 @@ export class ProjectService {
     const modulesDto = services ? this.extractModulesInput(createProjectDto) : [];
     const modelsDto = models ? this.extractModelsInput(createProjectDto) : [];
 
-    return {
-      modelsDto,
-      modulesDto,
-      servicesDto,
-      controllersDto,
-    };
+    const controllersObs = controllersDto.map(this.generateFileRequestFn(Layer.controller));
+    const servicesObs = servicesDto.map(this.generateFileRequestFn(Layer.service));
+    const modulesObs = modulesDto.map(this.generateFileRequestFn(Layer.module));
+    const modelsObs = modelsDto.map(this.generateFileRequestFn('model'));
+    const staticFilesObs = this.httpService.get('http://localhost:3001/static-files').pipe(map(prop('data')));
+
+    const files = await forkJoin<FileGenerated>(flatten([controllersObs, servicesObs, modulesObs, modelsObs, staticFilesObs])).toPromise();
+    this.filesCreationService.generateFileSystem({ projectName, files: flatten(files) });
+
+    return files;
   }
 
   private extractModulesInput(createProjectDto: CreateProjectDto): CreateModuleDto[] {
