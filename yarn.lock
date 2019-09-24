@@ -4414,6 +4414,11 @@ uuid@3.3.3, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
 
+uuidjs@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/uuidjs/-/uuidjs-4.2.4.tgz#b91edb0a25d44cd0a5c62a87b6f544eac7dd2463"
+  integrity sha512-K+9HBgqJ9wI8bZ3ESKR9kc1ePfNjtlq1t1C6c3EOBPK2TQ39Uw5oF4RnkePHlbFVpo+rKJPXrA42L26rfRNuhQ==
+
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/validate-npm-package-license/-/validate-npm-package-license-3.0.4.tgz#fc91f6b9c7ba15c857f4cb2c5defeec39d4f410a"

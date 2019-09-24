@@ -1,5 +1,6 @@
-export class CreateModelDto {
-  entityName: string;
+import { CreateLayerDto } from './create-layer.dto';
+
+export class CreateModelDto extends CreateLayerDto {
   attributes: ModelAttribute[];
 }
 
