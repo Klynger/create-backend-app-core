@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, BadRequestException, HttpCode, HttpStatus, Delete, Param } from '@nestjs/common';
 import { GeneratorService } from './generator.service';
-import { GeneratorModel } from '../shared/model/generator.model';
+import { GeneratorModel } from '../shared/models/generator.model';
 
 @Controller('generator')
 export class GeneratorController {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GeneratorModel } from 'src/shared/model/generator.model';
+import { GeneratorModel } from 'src/shared/models/generator.model';
 
 interface GeneratorMap {
   [key: string]: GeneratorModel;

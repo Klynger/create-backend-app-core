@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GeneratorRepository } from './generator.repository';
-import { GeneratorModel } from '../shared/model/generator.model';
+import { GeneratorModel } from '../shared/models/generator.model';
 import { NotFoundByParamException } from '../shared/exceptions/not-found-by-param.exception';
 
 @Injectable()
