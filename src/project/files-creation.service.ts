@@ -18,10 +18,6 @@ export class FilesCreationService {
     const projectPath = `${this.fullProjectsDir}/${projectDirName}`;
     fs.mkdirSync(projectPath);
     files.forEach(this.resolveFile(projectPath));
-
-    // files.forEach(file => {
-    //   console.log({ file });
-    // });
   }
 
   private resolveFile(rootDir: string) {
