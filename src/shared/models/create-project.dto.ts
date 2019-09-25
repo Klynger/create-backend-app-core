@@ -1,6 +1,6 @@
 import { CreateModuleDto } from './create-module.dto';
 
-interface APIConfig {
+export interface APIConfig {
   generator: string;
   controllers?: boolean;
   services?: boolean;
@@ -19,7 +19,7 @@ export interface EntityAPIActions {
 type EntityName = string;
 type AttributeName = string;
 
-interface AttributeType {
+export interface AttributeType {
   typeName: string;
   importable: boolean;
 }
