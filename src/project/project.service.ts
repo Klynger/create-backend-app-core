@@ -25,10 +25,11 @@ export class ProjectService {
     const {
       projectName,
       apiConfig: {
+        models = true,
         modules = true,
         services = true,
         controllers = true,
-        models = true,
+        repositories = true,
       },
     } = createProjectDto;
 
@@ -36,15 +37,17 @@ export class ProjectService {
     const modulesDto = services ? this.extractModulesInput(createProjectDto) : [];
     const servicesDto = modules ? this.extractServicesInput(createProjectDto) : [];
     const controllersDto = controllers ? this.extractControllerInput(createProjectDto) : [];
+    const repositoryDto = repositories ? this.extractRepositoryInput(createProjectDto) : [];
     const updateDto = models ? this.extractCreateOrUpdateInput(createProjectDto, Verb.PUT) : [];
     const createDto = models ? this.extractCreateOrUpdateInput(createProjectDto, Verb.POST) : [];
 
-    const controllersObs = controllersDto.map(this.generateFileRequestFn(Layer.controller));
-    const servicesObs = servicesDto.map(this.generateFileRequestFn(Layer.service));
-    const modulesObs = modulesDto.map(this.generateFileRequestFn(Layer.module));
     const modelsObs = modelsDto.map(this.generateFileRequestFn('model'));
     const createObs = createDto.map(this.generateFileRequestFn('create'));
     const updateObs = updateDto.map(this.generateFileRequestFn('update'));
+    const modulesObs = modulesDto.map(this.generateFileRequestFn(Layer.module));
+    const servicesObs = servicesDto.map(this.generateFileRequestFn(Layer.service));
+    const controllersObs = controllersDto.map(this.generateFileRequestFn(Layer.controller));
+    const repositoriesObs = repositoryDto.map(this.generateFileRequestFn(Layer.repository));
     const staticFilesObs = this.httpService.get('http://localhost:3001/static-files').pipe(map(prop('data')));
 
     const files = await forkJoin<FileGenerated>(flatten([
@@ -55,6 +58,7 @@ export class ProjectService {
       servicesObs,
       controllersObs,
       staticFilesObs,
+      repositoriesObs,
   ])).toPromise();
     this.filesCreationService.generateFileSystem({ projectName, files: flatten(files) });
 
@@ -170,6 +174,17 @@ export class ProjectService {
     return entitiesNames.map((entityName: string) => ({
       entityName,
       layerBellow,
+      implementedMethods: this.getImplementedMethods(entities[entityName].apiActions),
+    }));
+  }
+
+  private extractRepositoryInput(createProjectDto: CreateProjectDto) {
+    const { entities } = createProjectDto;
+
+    const entitiesNames = Object.keys(entities);
+
+    return entitiesNames.map((entityName: string) => ({
+      entityName,
       implementedMethods: this.getImplementedMethods(entities[entityName].apiActions),
     }));
   }
