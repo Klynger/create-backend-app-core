@@ -60,9 +60,7 @@ export class ProjectService {
       staticFilesObs,
       repositoriesObs,
   ])).toPromise();
-    this.filesCreationService.generateFileSystem({ projectName, files: flatten(files) });
-
-    return files;
+    return this.filesCreationService.generateFileSystem({ projectName, files: flatten(files) });
   }
 
   private extractModulesInput(createProjectDto: CreateProjectDto): CreateModuleDto[] {
