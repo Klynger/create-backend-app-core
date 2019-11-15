@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import * as mime from 'mime';
 import * as UUID from 'uuidjs';
 import { zip } from 'zip-a-folder';
 import { Injectable } from '@nestjs/common';
@@ -11,6 +12,7 @@ export class FilesCreationService {
   fullProjectsDir: string;
 
   constructor() {
+    // const path = process.cwd().replace(/\/([A-Z|_|\-|0-9])+$/i, '');
     this.fullProjectsDir = `${process.cwd()}/${PROJECTS_DIR}`;
   }
 
@@ -22,8 +24,14 @@ export class FilesCreationService {
     files.forEach(this.resolveFile(projectPath));
 
     await zip(projectPath, zipPath);
+    const mimeType = mime.getType(zipPath);
+    const result = {
+      mimeType,
+      data: fs.readFileSync(zipPath, { encoding: 'base64' }),
+    };
+    fs.rmdir(projectPath, () => {});
 
-    return fs.readFileSync(zipPath, { encoding: 'base64' });
+    return result;
   }
 
   private resolveFile(rootDir: string) {

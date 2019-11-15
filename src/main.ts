@@ -11,6 +11,10 @@ async function run(app: INestApplication, port: number) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: '*',
+  });
+
   await detect(DEFAULT_PORT).then(port => {
     if (port === DEFAULT_PORT) {
       run(app, port);
