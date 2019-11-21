@@ -49,7 +49,10 @@ $ npm run start:prod
 
 ## Running this app, the frontend and the generators
 
-In order to run the whole thing there is a certain order that you have to put them to work. First you have to start this app, then you start all the generators and then you start the [frontend](https://github.com/klynger/create-backend-app). With this you.
+1. Run this app
+2. Run the [nest-rest-generator](https://github.com/klynger/nest-rest-generator)
+3. Run the other generators
+4. Run the [frontend](https://github.com/klynger/create-backend-app)
 
 ### Creating your own generator
 
